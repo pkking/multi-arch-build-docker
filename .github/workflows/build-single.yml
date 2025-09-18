@@ -15,6 +15,9 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+
       - name: Set up Docker
         uses: docker/setup-docker-action@v4
         with:
