@@ -54,6 +54,7 @@ jobs:
           path: ${{ runner.temp }}/digests/*
           if-no-files-found: error
           retention-days: 1
+
 build-arm64:
     runs-on: ubuntu-latest-arm
     steps:
@@ -96,7 +97,7 @@ build-arm64:
           if-no-files-found: error
           retention-days: 1
 
-  merge:
+merge:
     runs-on: ubuntu-latest
     needs:
       - build-x64
