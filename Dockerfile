@@ -45,8 +45,8 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
 
 # Install SGLang
 RUN git clone https://github.com/sgl-project/sglang
-RUN (cd sglang/python && pip install --user -v .[srt_npu] --no-cache-dir) \
-    && (cd sglang/sgl-router && python -m build && pip install --user --force-reinstall dist/*.whl) \
+RUN (cd sglang/python && pip install --user --break-system-packages -v .[srt_npu] --no-cache-dir) \
+    && (cd sglang/sgl-router && python -m build && pip install --break-system-packages --user --force-reinstall dist/*.whl) \
     && rm -rf sglang
 
 CMD ["/bin/bash"]
