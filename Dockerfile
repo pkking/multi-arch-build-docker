@@ -6,6 +6,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install development tools and utilities
 RUN apt-get update -y && apt upgrade -y && apt-get install -y \
+    python3 \
+    python3-pip \
     build-essential \
     cmake \
     vim \
