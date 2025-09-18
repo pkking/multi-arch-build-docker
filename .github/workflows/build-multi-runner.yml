@@ -114,9 +114,8 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
 
       - name: Create manifest list and push
-        working-directory: ${{ runner.temp }}/digests
         run: |
-          docker manifest create ${{ env.REGISTRY_IMAGE }} -a ${{ env.REGISTRY_IMAGE }}@sha256:${{ jobs.build-x64.outputs.DIGEST }} -a ${{ env.REGISTRY_IMAGE }}@sha256:${{ jobs.build-arm64.outputs.DIGEST }}
+          docker manifest create ${{ env.REGISTRY_IMAGE }} -a ${{ env.REGISTRY_IMAGE }}@sha256:${{ needs.build-x64.outputs.DIGEST }} -a ${{ env.REGISTRY_IMAGE }}@sha256:${{ needs.build-arm64.outputs.DIGEST }}
           docker manifest push ${{ env.REGISTRY_IMAGE }}
       
       - name: Inspect image
