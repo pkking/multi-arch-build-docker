@@ -95,9 +95,7 @@ RUN pip install torch==$PYTORCH_VERSION torchvision==$TORCHVISION_VERSION --inde
     && pip install ${TRITON_ASCEND_URL} --no-cache-dir
 
 # Install SGLang
-RUN mkdir /workspace/sglang
-COPY . /workspace/sglang
-RUN (cd sglang/python && pip install -v .[srt_npu] --no-cache-dir) \
+RUN git clone https://github.com/sgl-project/sglang && (cd sglang/python && pip install -v .[srt_npu] --no-cache-dir) \
     && (cd sglang/sgl-router && python -m build && pip install --force-reinstall dist/*.whl) \
     && rm -rf sglang
 
