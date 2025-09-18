@@ -24,6 +24,8 @@ RUN apt-get update -y && apt upgrade -y && apt-get install -y \
     pkg-config \
     ca-certificates \
     protobuf-compiler \
+    python3-setuptools-rust \
+    python3-wheel \
     && rm -rf /var/cache/apt/* \
     && rm -rf /var/lib/apt/lists/* \
     && update-ca-certificates \
@@ -35,7 +37,6 @@ ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     PATH="/root/.cargo/bin:${PATH}"
 
-RUN pip install setuptools-rust wheel build --no-cache-dir
 
 # install rustup from rustup.rs
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
