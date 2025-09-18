@@ -25,6 +25,7 @@ RUN apt-get update -y && apt upgrade -y && apt-get install -y \
     ca-certificates \
     protobuf-compiler \
     python3-setuptools-rust \
+    git \
     python3-wheel \
     && rm -rf /var/cache/apt/* \
     && rm -rf /var/lib/apt/lists/* \
