@@ -33,8 +33,6 @@ ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     PATH="/root/.cargo/bin:${PATH}"
 
-RUN pip install $MEMFABRIC_URL --no-cache-dir
-
 RUN pip install setuptools-rust wheel build --no-cache-dir
 
 # install rustup from rustup.rs
