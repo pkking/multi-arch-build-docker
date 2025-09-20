@@ -1,6 +1,5 @@
 FROM quay.io/lib/ubuntu as downloader
 
-# 定义不同架构的URL
 ARG MEMFABRIC_URL_amd64="https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/mf_adapter-1.0.0-cp311-cp311-linux_x86_64.whl"
 ARG PTA_URL_amd64="https://gitcode.com/Ascend/pytorch/releases/download/v7.1.0.2-pytorch2.6.0/torch_npu-2.6.0.post2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
 ARG TRITON_ASCEND_URL_amd64="https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/triton_ascend-3.2.0.dev20250815-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl"
@@ -13,21 +12,18 @@ ENV MEMFABRIC_URL=MEMFABRIC_URL_$TARGETARCH
 ENV PTA_URL=PTA_URL_$TARGETARCH
 ENV TRITON_ASCEND_URL=TRITON_ASCEND_URL_$TARGETARCH
 
-# 根据架构设置环境变量
 RUN  curl -o mf.whl -L ${!MEMFABRIC_URL}; \
       curl -o pta.whl -L ${!PTA_URL}  \
       curl -o triton.whl -L ${!TRITON_ASCEND_URL}      
+
 
 ARG CANN_VERSION=8.2.rc1
 ARG DEVICE_TYPE=910b  # Default, overridden by workflow
 ARG OS=ubuntu22.04
 ARG PYTHON_VERSION=py3.11
 ARG REGISTRY=quay.io/ascend
-
-# 第一阶段：设置基础环境和变量
 FROM $REGISTRY/cann:$CANN_VERSION-$DEVICE_TYPE-$OS-$PYTHON_VERSION
 
-# 动态依赖选择
 ARG TARGETARCH # auto-set by Buildx (amd64/arm64)
 ARG PIP_INDEX_URL="https://pypi.org/simple/"
 ARG APTMIRROR=""
@@ -41,11 +37,9 @@ ARG SGLANG_KERNEL_NPU_TAG=main
 WORKDIR /workspace
 ENV DEBIAN_FRONTEND=noninteractive
 
-# 配置 pip 和 apt 镜像
 RUN pip config set global.index-url $PIP_INDEX_URL && \
     if [ -n "$APTMIRROR" ]; then sed -i "s|//.*.ubuntu.com|//$APTMIRROR|g" /etc/apt/sources.list; fi
 
-# 安装系统依赖
 RUN apt-get update -y && apt upgrade -y && apt-get install -y \
     build-essential \
     cmake \
