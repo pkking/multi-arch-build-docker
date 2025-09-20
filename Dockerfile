@@ -19,8 +19,8 @@ ENV PTA_URL=PTA_URL_$TARGETARCH
 ENV TRITON_ASCEND_URL=TRITON_ASCEND_URL_$TARGETARCH
 
 RUN  curl -o mf.whl -L ${!MEMFABRIC_URL}; \
-      curl -o pta.whl -L ${!PTA_URL}  \
-      curl -o triton.whl -L ${!TRITON_ASCEND_URL}      
+      curl -o pta.whl -L ${!PTA_URL};  \
+      curl -o triton.whl -L ${!TRITON_ASCEND_URL};
 
 FROM $REGISTRY/cann:$CANN_VERSION-$DEVICE_TYPE-$OS-$PYTHON_VERSION
 
