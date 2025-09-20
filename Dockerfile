@@ -30,14 +30,14 @@ ARG TRITON_ASCEND_URL_ARM64="https://sglang-ascend.obs.cn-east-3.myhuaweicloud.c
 # 根据架构设置环境变量
 RUN if [ "$TARGETARCH" = "amd64" ]; then \
       echo "Using x86_64 dependencies"; \
-      echo "MEMFABRIC_URL=$MEMFABRIC_URL_AMD64" >> $GITHUB_ENV; \
-      echo "PTA_URL=$PTA_URL_AMD64" >> $GITHUB_ENV; \
-      echo "TRITON_ASCEND_URL=$TRITON_ASCEND_URL_AMD64" >> $GITHUB_ENV; \
+      echo "MEMFABRIC_URL=$MEMFABRIC_URL_AMD64" >> "$GITHUB_OUTPUT"; \
+      echo "PTA_URL=$PTA_URL_AMD64" >> "$GITHUB_OUTPUT"; \
+      echo "TRITON_ASCEND_URL=$TRITON_ASCEND_URL_AMD64" >> "$GITHUB_OUTPUT"; \
     elif [ "$TARGETARCH" = "arm64" ]; then \
       echo "Using aarch64 dependencies"; \
-      echo "MEMFABRIC_URL=$MEMFABRIC_URL_ARM64" >> $GITHUB_ENV; \
-      echo "PTA_URL=$PTA_URL_ARM64" >> $GITHUB_ENV; \
-      echo "TRITON_ASCEND_URL=$TRITON_ASCEND_URL_ARM64" >> $GITHUB_ENV; \
+      echo "MEMFABRIC_URL=$MEMFABRIC_URL_ARM64" >> "$GITHUB_OUTPUT"; \
+      echo "PTA_URL=$PTA_URL_ARM64" >> "$GITHUB_OUTPUT"; \
+      echo "TRITON_ASCEND_URL=$TRITON_ASCEND_URL_ARM64" >> "$GITHUB_OUTPUT"; \
     else \
       echo "Unsupported TARGETARCH: $TARGETARCH"; exit 1; \
     fi
