@@ -18,6 +18,7 @@ ARG TRITON_ASCEND_URL_arm64="https://sglang-ascend.obs.cn-east-3.myhuaweicloud.c
 ENV MEMFABRIC_URL=MEMFABRIC_URL_$TARGETARCH
 ENV PTA_URL=PTA_URL_$TARGETARCH
 ENV TRITON_ASCEND_URL=TRITON_ASCEND_URL_$TARGETARCH
+ENV SHELL=/bin/bash
 
 RUN  curl -o mf.whl -L ${!MEMFABRIC_URL}; \
       curl -o pta.whl -L ${!PTA_URL};  \
@@ -66,8 +67,7 @@ RUN apt-get update -y && apt upgrade -y && apt-get install -y \
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
-    PATH="/root/.cargo/bin:${PATH}" \
-    SHELL=/bin/bash
+    PATH="/root/.cargo/bin:${PATH}" 
 
 COPY --from=downloader mf.whl mf.whl
 RUN pip install mf.whl --no-cache-dir && pip install setuptools-rust wheel build --no-cache-dir
