@@ -6,6 +6,7 @@ ARG REGISTRY=quay.io/ascend
 
 FROM quay.io/lib/ubuntu as downloader
 
+ARG TARGETARCH
 ARG MEMFABRIC_URL_amd64="https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/mf_adapter-1.0.0-cp311-cp311-linux_x86_64.whl"
 ARG PTA_URL_amd64="https://gitcode.com/Ascend/pytorch/releases/download/v7.1.0.2-pytorch2.6.0/torch_npu-2.6.0.post2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
 ARG TRITON_ASCEND_URL_amd64="https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/triton_ascend-3.2.0.dev20250815-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl"
@@ -24,7 +25,6 @@ RUN  curl -o mf.whl -L ${!MEMFABRIC_URL}; \
 
 FROM $REGISTRY/cann:$CANN_VERSION-$DEVICE_TYPE-$OS-$PYTHON_VERSION
 
-ARG TARGETARCH # auto-set by Buildx (amd64/arm64)
 ARG PIP_INDEX_URL="https://pypi.org/simple/"
 ARG APTMIRROR=""
 ARG PYTORCH_VERSION=2.6.0
