@@ -66,7 +66,8 @@ RUN apt-get update -y && apt upgrade -y && apt-get install -y \
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
     LC_ALL=en_US.UTF-8 \
-    PATH="/root/.cargo/bin:${PATH}"
+    PATH="/root/.cargo/bin:${PATH}" \
+    SHELL=/bin/bash
 
 COPY --from=downloader mf.whl mf.whl
 RUN pip install mf.whl --no-cache-dir && pip install setuptools-rust wheel build --no-cache-dir
