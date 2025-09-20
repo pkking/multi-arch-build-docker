@@ -1,3 +1,9 @@
+ARG CANN_VERSION=8.2.rc1
+ARG DEVICE_TYPE=910b  # Default, overridden by workflow
+ARG OS=ubuntu22.04
+ARG PYTHON_VERSION=py3.11
+ARG REGISTRY=quay.io/ascend
+
 FROM quay.io/lib/ubuntu as downloader
 
 ARG MEMFABRIC_URL_amd64="https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/mf_adapter-1.0.0-cp311-cp311-linux_x86_64.whl"
@@ -16,12 +22,6 @@ RUN  curl -o mf.whl -L ${!MEMFABRIC_URL}; \
       curl -o pta.whl -L ${!PTA_URL}  \
       curl -o triton.whl -L ${!TRITON_ASCEND_URL}      
 
-
-ARG CANN_VERSION=8.2.rc1
-ARG DEVICE_TYPE=910b  # Default, overridden by workflow
-ARG OS=ubuntu22.04
-ARG PYTHON_VERSION=py3.11
-ARG REGISTRY=quay.io/ascend
 FROM $REGISTRY/cann:$CANN_VERSION-$DEVICE_TYPE-$OS-$PYTHON_VERSION
 
 ARG TARGETARCH # auto-set by Buildx (amd64/arm64)
