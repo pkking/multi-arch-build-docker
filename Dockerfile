@@ -6,7 +6,7 @@ ARG REGISTRY=quay.io/ascend
 
 FROM quay.io/lib/ubuntu AS downloader
 ARG TARGETARCH
-
+RUN apt install -y curl
 RUN curl -o mf-$TARGETARCH.whl -L https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/mf_adapter-1.0.0-cp311-cp311-linux_x86_64.whl
 RUN curl -o pta-$TARGETARCH.whl -L https://gitcode.com/Ascend/pytorch/releases/download/v7.1.0.2-pytorch2.6.0/torch_npu-2.6.0.post2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 RUN curl -o triton-$TARGETARCH.whl -L https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/triton_ascend-3.2.0.dev20250815-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
