@@ -5,17 +5,14 @@ ARG PYTHON_VERSION=py3.11
 ARG REGISTRY=quay.io/ascend
 ARG TARGETARCH
 
-FROM quay.io/lib/ubuntu AS downloader-amd64
+FROM quay.io/lib/ubuntu AS downloader
 
-RUN curl -o mf.whl -L https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/mf_adapter-1.0.0-cp311-cp311-linux_x86_64.whl
-RUN curl -o pta.whl -L https://gitcode.com/Ascend/pytorch/releases/download/v7.1.0.2-pytorch2.6.0/torch_npu-2.6.0.post2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-RUN curl -o triton.whl -L https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/triton_ascend-3.2.0.dev20250815-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
-
-FROM quay.io/lib/ubuntu AS downloader-arm64
-
-RUN curl -o mf.whl -L https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/mf_adapter-1.0.0-cp311-cp311-linux_aarch64.whl
-RUN curl -o pta.whl -L https://gitee.com/ascend/pytorch/releases/download/v7.1.0.1-pytorch2.6.0/torch_npu-2.6.0.post1-cp311-cp311-manylinux_2_28_aarch64.whl
-RUN curl -o triton.whl -L https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/triton_ascend-3.2.0.dev20250729-cp311-cp311-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl
+RUN curl -o mf-$TARGETARCH.whl -L https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/mf_adapter-1.0.0-cp311-cp311-linux_x86_64.whl
+RUN curl -o pta-$TARGETARCH.whl -L https://gitcode.com/Ascend/pytorch/releases/download/v7.1.0.2-pytorch2.6.0/torch_npu-2.6.0.post2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+RUN curl -o triton-$TARGETARCH.whl -L https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/triton_ascend-3.2.0.dev20250815-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+RUN curl -o mf-$TARGETARCH.whl -L https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/mf_adapter-1.0.0-cp311-cp311-linux_aarch64.whl
+RUN curl -o pta-$TARGETARCH.whl -L https://gitee.com/ascend/pytorch/releases/download/v7.1.0.1-pytorch2.6.0/torch_npu-2.6.0.post1-cp311-cp311-manylinux_2_28_aarch64.whl
+RUN curl -o triton-$TARGETARCH.whl -L https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/triton_ascend-3.2.0.dev20250729-cp311-cp311-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl
 
 FROM $REGISTRY/cann:$CANN_VERSION-$DEVICE_TYPE-$OS-$PYTHON_VERSION
 
@@ -62,7 +59,9 @@ ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     PATH="/root/.cargo/bin:${PATH}" 
 
-COPY --from=downloader-$TARGETARCH *.whl .
+COPY --from=downloader pta-$TARGETARCH.whl pta.whl
+COPY --from=downloader mf-$TARGETARCH.whl mf.whl
+COPY --from=downloader triton-$TARGETARCH.whl triton.whl
 RUN pip install mf.whl --no-cache-dir && pip install setuptools-rust wheel build --no-cache-dir
 
 # install rustup from rustup.rs
