@@ -4,7 +4,7 @@ ARG OS=ubuntu22.04
 ARG PYTHON_VERSION=py3.11
 ARG REGISTRY=quay.io/ascend
 
-FROM quay.io/lib/ubuntu as downloader
+FROM quay.io/lib/ubuntu AS downloader
 
 ARG TARGETARCH
 ARG MEMFABRIC_URL_amd64="https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/mf_adapter-1.0.0-cp311-cp311-linux_x86_64.whl"
@@ -20,9 +20,7 @@ ENV PTA_URL=PTA_URL_$TARGETARCH
 ENV TRITON_ASCEND_URL=TRITON_ASCEND_URL_$TARGETARCH
 ENV SHELL=/bin/bash
 
-RUN  curl -o mf.whl -L ${!MEMFABRIC_URL}; \
-      curl -o pta.whl -L ${!PTA_URL};  \
-      curl -o triton.whl -L ${!TRITON_ASCEND_URL};
+RUN  /bin/bash -c "curl -o mf.whl -L ${!MEMFABRIC_URL} && curl -o pta.whl -L ${!PTA_URL} && curl -o triton.whl -L ${!TRITON_ASCEND_URL}"
 
 FROM $REGISTRY/cann:$CANN_VERSION-$DEVICE_TYPE-$OS-$PYTHON_VERSION
 
