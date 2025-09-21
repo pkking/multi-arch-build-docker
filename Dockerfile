@@ -3,6 +3,7 @@ ARG DEVICE_TYPE=910b  # Default, overridden by workflow
 ARG OS=ubuntu22.04
 ARG PYTHON_VERSION=py3.11
 ARG REGISTRY=quay.io/ascend
+ARG TARGETARCH
 
 FROM quay.io/lib/ubuntu AS downloader-amd64
 
@@ -26,7 +27,6 @@ ARG VLLM_TAG=v0.8.5
 ARG SGLANG_TAG=main
 ARG ASCEND_CANN_PATH=/usr/local/Ascend/ascend-toolkit
 ARG SGLANG_KERNEL_NPU_TAG=main
-ARG TARGETARCH
 
 WORKDIR /workspace
 ENV DEBIAN_FRONTEND=noninteractive
