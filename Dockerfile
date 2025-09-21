@@ -6,6 +6,7 @@ ARG REGISTRY=quay.io/ascend
 
 FROM quay.io/lib/ubuntu AS downloader
 ARG TARGETARCH
+WORKDIR /workspace
 RUN apt update && apt install -y curl
 RUN if [ $TARGETARCH == "amd64" ];then curl -o mf.whl -L https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/mf_adapter-1.0.0-cp311-cp311-linux_x86_64.whl;fi
 RUN if [ $TARGETARCH == "amd64" ];then curl -o pta.whl -L https://gitcode.com/Ascend/pytorch/releases/download/v7.1.0.2-pytorch2.6.0/torch_npu-2.6.0.post2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl;fi
@@ -13,7 +14,7 @@ RUN if [ $TARGETARCH == "amd64" ];then curl -o triton.whl -L https://sglang-asce
 RUN if [ $TARGETARCH == "arm64" ];then curl -o mf.whl -L https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/mf_adapter-1.0.0-cp311-cp311-linux_aarch64.whl;fi
 RUN if [ $TARGETARCH == "arm64" ];then curl -o pta.whl -L https://gitee.com/ascend/pytorch/releases/download/v7.1.0.1-pytorch2.6.0/torch_npu-2.6.0.post1-cp311-cp311-manylinux_2_28_aarch64.whl;fi
 RUN if [ $TARGETARCH == "arm64" ];then curl -o triton.whl -L https://sglang-ascend.obs.cn-east-3.myhuaweicloud.com/sglang/triton_ascend-3.2.0.dev20250729-cp311-cp311-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl;fi
-
+RUN ls -al && pwd
 FROM $REGISTRY/cann:$CANN_VERSION-$DEVICE_TYPE-$OS-$PYTHON_VERSION
 
 ARG PIP_INDEX_URL="https://pypi.org/simple/"
@@ -60,9 +61,9 @@ ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8 \
     PATH="/root/.cargo/bin:${PATH}" 
 
-COPY --from=downloader . .
+COPY --from=downloader /workspace/*.whl /workspace/
 
-RUN ls -al && pwd && pip install ./mf.whl --no-cache-dir && pip install setuptools-rust wheel build --no-cache-dir
+RUN ls -al && pwd && pip install /workspace/mf.whl --no-cache-dir && pip install setuptools-rust wheel build --no-cache-dir
 
 # install rustup from rustup.rs
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
@@ -74,9 +75,9 @@ RUN git clone --depth 1 https://github.com/vllm-project/vllm.git --branch $VLLM_
 
 # TODO: install from pypi released triton-ascend
 RUN pip install torch==$PYTORCH_VERSION torchvision==$TORCHVISION_VERSION --index-url https://download.pytorch.org/whl/cpu --no-cache-dir \
-    && pip install ./pta.whl --no-cache-dir \
+    && pip install /workspace/pta.whl --no-cache-dir \
     && python3 -m pip install --no-cache-dir attrs==24.2.0 numpy==1.26.4 scipy==1.13.1 decorator==5.1.1 psutil==6.0.0 pytest==8.3.2 pytest-xdist==3.6.1 pyyaml pybind11 \
-    && pip install ./triton.whl --no-cache-dir
+    && pip install /workspace/triton.whl --no-cache-dir
 
 # Install SGLang
 RUN git clone https://github.com/sgl-project/sglang && (cd sglang/python && pip install -v .[srt_npu] --no-cache-dir) \
