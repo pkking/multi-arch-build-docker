@@ -66,7 +66,7 @@ ENV LANG=en_US.UTF-8 \
 
 COPY --from=downloader *.whl .
 
-RUN ls -al && pwd && pip install "./mf_adapter-*.whl" --no-cache-dir && pip install setuptools-rust wheel build --no-cache-dir
+RUN ls -al && pwd && pip install ./mf_adapter*.whl --no-cache-dir && pip install setuptools-rust wheel build --no-cache-dir
 
 # install rustup from rustup.rs
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y \
@@ -78,9 +78,9 @@ RUN git clone --depth 1 https://github.com/vllm-project/vllm.git --branch $VLLM_
 
 # TODO: install from pypi released triton-ascend
 RUN pip install torch==$PYTORCH_VERSION torchvision==$TORCHVISION_VERSION --index-url https://download.pytorch.org/whl/cpu --no-cache-dir \
-    && pip install "./torch_npu-*.whl" --no-cache-dir \
+    && pip install ./torch_npu*.whl --no-cache-dir \
     && python3 -m pip install --no-cache-dir attrs==24.2.0 numpy==1.26.4 scipy==1.13.1 decorator==5.1.1 psutil==6.0.0 pytest==8.3.2 pytest-xdist==3.6.1 pyyaml pybind11 \
-    && pip install "./triton_ascend-*.whl" --no-cache-dir
+    && pip install ./triton_ascend*.whl --no-cache-dir
 
 # Install SGLang
 RUN git clone https://github.com/sgl-project/sglang && (cd sglang/python && pip install -v .[srt_npu] --no-cache-dir) \
